@@ -22,17 +22,16 @@ target: $(BTARGET).bin
 include $(TDIR)/Makefile
 
 
+
 # list of C objects
-TOBJECTS = $(addprefix $(BTDIR)/,$(notdir $(C_SOURCES:.c=.o)))
-temp1 = $(sort $(dir $(C_SOURCES)))
-vpath $(TDIR)/%.c $(shell python pt.py $(TDIR) $(temp1))
-
-
+TSRC = $(shell python pt.py $(TDIR) $(C_SOURCES))
+TOBJECTS = $(addprefix $(BTDIR)/,$(notdir $(TSRC:.c=.o)))
+vpath %.c $(sort $(dir $(TSRC)))
 
 # list of ASM program objects
-TOBJECTS += $(addprefix $(BTDIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
-temp2 = $(sort $(dir $(ASM_SOURCES)))
-vpath $(TDIR)/%.s $(shell python pt.py $(TDIR) $(temp2))
+TASM = $(shell python pt.py $(TDIR) $(ASM_SOURCES))
+TOBJECTS += $(addprefix $(BTDIR)/,$(notdir $(TASM:.s=.o)))
+vpath %.s $(sort $(dir $(TASM)))
 
 
 $(BTDIR)/%.o: %.c Makefile | $(BDIR) 
@@ -61,12 +60,10 @@ $(BDIR)/%.bin: $(BDIR)/%.elf | $(BDIR)
 info_target:
 	@echo -e "Target Compiler:" $(CC)
 	@echo -e "Target objects:\n" $(TOBJECTS)
-	@echo -e "Target sources:\n" $(C_SOURCES)
-	@echo -e "Target ASM:\n" $(ASM_SOURCES)
+	@echo -e "Target sources:\n" $(TSRC)
+	@echo -e "Target ASM:\n" $(TASM)
 	@echo -e "temp: " $(temp)
-	@echo -e "temp2: " $(temp2)
+	@echo -e "TSRC: " $(TSRC)
 
 
-temp = $(sort $(dir $(C_SOURCES))) | tr " " "\n" 
-
-
+temp = $(BDIR)/$(notdir $(<:.c=.lst))
