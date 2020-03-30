@@ -1,0 +1,12 @@
+*.swp
+*.o
+*.clangd
+
+# ignore the reulst binary
+generic_test
+uTest
+tags
+
+# ignore the buld dir as is
+build
+
