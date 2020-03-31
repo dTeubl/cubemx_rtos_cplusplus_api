@@ -1,12 +1,17 @@
 *.swp
 *.o
 *.clangd
+*.bin
+*.elf
+*.hex
 
 # ignore the reulst binary
 generic_test
 uTest
 tags
+compile_commands.json
 
 # ignore the buld dir as is
 build
+
 

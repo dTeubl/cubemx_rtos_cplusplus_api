@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# A simple program to read the data send to serial port and convert it to decimal format
+
+stty -F /dev/ttyACM0 cstopb raw speed 115200 icrnl
+# stty -F /dev/ttyUSB0 raw speed 9600 icrnl
+# stty -F /dev/ttyUSB0 cstopb raw speed 115200 icrnl
+# stty -F /dev/ttyUSB0 cstopb raw speed 115200 icrnl
+# stty -F /dev/ttyUSB0 cstopb raw speed 230400 icrnl
+cat /dev/ttyACM0
+

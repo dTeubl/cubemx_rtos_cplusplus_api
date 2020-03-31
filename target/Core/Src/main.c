@@ -22,6 +22,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "eth.h"
+#include "stm32f7xx_hal_gpio.h"
 #include "usart.h"
 #include "usb_otg.h"
 #include "gpio.h"
@@ -60,6 +61,22 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void UserTask(void *argument)
+{
+  /* USER CODE BEGIN UserTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    HAL_GPIO_TogglePin( LD1_GPIO_Port, LD1_Pin );
+    osDelay(250);
+    HAL_GPIO_TogglePin( LD2_GPIO_Port, LD2_Pin );
+    osDelay(250);
+    HAL_GPIO_TogglePin( LD3_GPIO_Port, LD3_Pin );
+    osDelay(250);
+  }
+  /* USER CODE END UserTask */
+}
+
 
 /* USER CODE END 0 */
 
@@ -101,6 +118,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
+
 
   /* USER CODE END 2 */
 
