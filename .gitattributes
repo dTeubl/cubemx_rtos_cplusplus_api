@@ -1,0 +1,8 @@
+*   text=auto
+
+*.pdf -diff
+*.png -diff
+*.bin -diff
+*.elf -diff
+*.hex -diff
+

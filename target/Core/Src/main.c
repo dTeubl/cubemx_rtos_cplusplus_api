@@ -22,7 +22,6 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "eth.h"
-#include "stm32f7xx_hal_gpio.h"
 #include "usart.h"
 #include "usb_otg.h"
 #include "gpio.h"
