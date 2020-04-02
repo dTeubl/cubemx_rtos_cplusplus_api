@@ -24,11 +24,10 @@ void UserTask(void *argument)
     HAL_GPIO_TogglePin( LD2_GPIO_Port, LD2_Pin );
     osDelay(250);
     HAL_GPIO_TogglePin( LD3_GPIO_Port, LD3_Pin );
-    osDelay(250);
-
-    auto ms = appDiag();
-    HAL_GPIO_TogglePin( LD2_GPIO_Port , LD2_Pin );
-    HAL_UART_Transmit(&huart3, (uint8_t*)ms.msg, ms.len , 1000);
+    osDelay(230);
+    s_msg ms = appDiag();
+//HAL_UART_Transmit(&huart3, (uint8_t*)ms.msg, ms.len , 10);
+    HAL_UART_Transmit(&huart3, (uint8_t*)ms.msg, ms.len , 10);
 
   }
   /* USER CODE END UserTask */

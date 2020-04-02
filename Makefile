@@ -55,9 +55,9 @@ CPPFLAGS = $(MCU) $(C_DEFS) $(CPP_INC) $(TCINCS) $(T_OPT) $(T_EXTRA) $(CPP_EXTRA
 
 # Linker configurations
 TLDSCRIPT = $(shell python ./scripts/pt.py $(TDIR) $(LDSCRIPT))
-LD_SYS_LIBS = -lstdc++ -lsupc++ -lgcc
-TLIBS = -lc -lm -lnosys $(LD_SYS_LIBS)
-TLIBDIR = 
+# This is needed somehow, have no clue about it why, yet
+TLIBS = -lstdc++ -lsupc++ -lgcc -lc -lm -lnosys
+TLIBDIR = -lstdc++ -lsupc++ -lgcc -lc -lm -lnosys
 TLDFLAGS = $(MCU) -specs=nano.specs -T$(TLDSCRIPT) $(TLIBDIR) $(TLIBS) -Wl,-Map=$(BTDIR)/$(TPROG).map,--cref -Wl,--gc-sections
 
 
