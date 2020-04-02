@@ -5,6 +5,7 @@
 #DEFAULT_GOAL := all
 TPROG = arm_app
 TDIR = ./target
+TWRAP = ./wrapper
 BDIR = ./build
 BTDIR = $(BDIR)/$(TPROG)
 BTARGET = $(BTDIR)/$(TPROG)
@@ -29,6 +30,7 @@ include $(TDIR)/Makefile
 
 # Configuration for Embedded C++ object
 CPP_SOURCES = $(wildcard ./app/src/*cpp)
+CPP_WARP = $(wildcard $(TWARP)/*cpp)
 CPP_INC = $(patsubst %,-I%,app/inc/) 
 
 #============================ Reconfifuration of flags
@@ -36,7 +38,7 @@ CPP_INC = $(patsubst %,-I%,app/inc/)
 T_EXTRA = -Wall -fdata-sections -ffunction-sections -pedantic
 T_OPT = -O2
 T_CCVERSION = -std=c17
-CPP_EXTRA = -std=c++17 -Weffc++
+CPP_EXTRA = -std=c++17 -Weffc++ -pedantic
 
 # Recreate CFLGAS
 TCINCS = $(shell python ./scripts/inc_fix.py $(TDIR) $(C_INCLUDES))
@@ -73,6 +75,7 @@ vpath %.s $(sort $(dir $(TASM)))
 
 # list of C++ objects
 TOBJECTS += $(addprefix $(BTDIR)/,$(notdir $(CPP_SOURCES:.cpp=.o)))
+TOBJECTS += $(addprefix $(BTDIR)/,$(notdir $(TWARP:.cpp=.o)))
 vpath %.cpp $(sort $(dir $(CPP_SOURCES)))
 
 #============================ Compiling the objects ===========================
@@ -120,8 +123,54 @@ info_target:
 	@echo -e "Target c++ INC... " $(CPP_INC)
 	@echo -e "temp2: " $(temp2)
 	@echo -e "ldflags: " $(TLDFLAGS)
+	@echo -e "============ TESTING"
+	@echo -e "uTest: " $(TEST_TARGET)
+	@echo -e "TOBJS: " $(TOBJS)
+	@echo -e "TSRCS: " $(TSRCS)
+
 
 
 temp2 =$(BTDIR)/$(notdir $(<:.cpp=.lst))
+
+
+#============================ Unit Test configuration =========================
+TEST_TARGET = uTest
+TEST_SRC_DIR = ./test
+TESTDIR = $(BDIR)/test
+
+GOOGLE_TEST_LIB = gtest
+GOOGLE_TEST_INCLUDE = /usr/local/include
+TINC = $(CPP_INC)
+
+
+
+TCC = g++
+TCC_FLAGS = -c -Wall $(CPP_EXTRA) $(TINC) -I $(GOOGLE_TEST_INCLUDE)
+TLD_FLAGS = -L /usr/local/lib -l $(GOOGLE_TEST_LIB) -l pthread
+
+
+TEST_SRC = $(wildcard $(TEST_SRC_DIR)/*cpp)
+TSRCS = $(CPP_SOURCES)
+TSRCS += $(TEST_SRC)
+
+TOBJS = $(addprefix $(BDIR)/,$(notdir $(CPP_SOURCES:.cpp=.o)))
+TOBJS += $(addprefix $(BDIR)/,$(notdir $(TEST_SRC:.cpp=.o)))
+vpath %.cpp $(sort $(dir $(TSRCS)))
+
+.PHONY: $(TEST_TARGET)
+$(TEST_TARGET): $(TOBJS) Makefile | $(BDIR) $(TESTDIR)
+	@echo "========== linking objects =========="
+	@$(TCC) -o $(TEST_TARGET) $(TOBJS) $(TLD_FLAGS)
+	@echo $(TCC): $@
+
+$(BDIR)/%.o: %.cpp  
+	@echo $(TCC)": "$< 
+	$(TCC) $(TCC_FLAGS) $(TINC) -c $< -o $@
+
+.PHONY: $((TESTDIR)
+$(TESTDIR):
+	@mkdir -p $@
+
+
 
 
