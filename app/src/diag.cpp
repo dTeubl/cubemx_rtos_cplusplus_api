@@ -14,6 +14,7 @@ int some_array[1024];
 static_assert(countof(some_array) == 1024, "wrong size");
 
 
+
 s_msg appDiag ( void ){
     s_msg ms;
     auto veson{__cplusplus};

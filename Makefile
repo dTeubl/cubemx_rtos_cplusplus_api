@@ -30,7 +30,7 @@ include $(TDIR)/Makefile
 
 # Configuration for Embedded C++ object
 CPP_SOURCES = $(wildcard ./app/src/*cpp)
-CPP_WARP = $(wildcard $(TWARP)/*cpp)
+CPP_WRAP = $(wildcard $(TWRAP)/*cpp)
 CPP_INC = $(patsubst %,-I%,app/inc/) 
 
 #============================ Reconfifuration of flags
@@ -75,8 +75,9 @@ vpath %.s $(sort $(dir $(TASM)))
 
 # list of C++ objects
 TOBJECTS += $(addprefix $(BTDIR)/,$(notdir $(CPP_SOURCES:.cpp=.o)))
-TOBJECTS += $(addprefix $(BTDIR)/,$(notdir $(TWARP:.cpp=.o)))
+TOBJECTS += $(addprefix $(BTDIR)/,$(notdir $(CPP_WRAP:.cpp=.o)))
 vpath %.cpp $(sort $(dir $(CPP_SOURCES)))
+vpath %.cpp $(sort $(dir $(CPP_WRAP)))
 
 #============================ Compiling the objects ===========================
 # I still not exactly know why we have to add the "Makefile | $(BDIR)" at the end, but it needs it
@@ -172,5 +173,8 @@ $(TESTDIR):
 	@mkdir -p $@
 
 
+.PHONY: burn
+burn: $(TPROG).bin
+	@./scripts/burn.sh $(TPROG).bin
 
 
